@@ -1,6 +1,6 @@
 
-build: components index.js
-	@component build --dev
+build: components index.js input.js tree.css
+	@component build --dev -o test/example/ -n index
 
 components: component.json
 	@component install --dev
@@ -8,4 +8,26 @@ components: component.json
 clean:
 	rm -fr build components template.js
 
-.PHONY: clean
+blanket:
+	@mocha -R html-cov --require blanket > coverage.html
+
+input.js: input.jsx
+	@jsx input.jsx > input.js
+
+test:
+	@mocha -R spec
+
+test/example/react.js:
+	@curl -L -o test/example/react.js http://fb.me/react-0.5.1.js
+
+example: test/example/react.js build
+	@xdg-open test/example/index.html
+
+gh-pages: test/example/react.js build
+	rm -rf web
+	cp -r test/example web
+	git co gh-pages
+	mv web/* ./
+	rm -rf web
+
+.PHONY: clean test
