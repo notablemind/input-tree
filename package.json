@@ -1,0 +1,24 @@
+{
+  "name": "input-tree",
+  "version": "0.0.0",
+  "description": "A tree of inputs with movement via keyboard shortcuts",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/notablemind/input-tree.git"
+  },
+  "keywords": [
+    "component",
+    "react",
+    "tree",
+    "re-arrange"
+  ],
+  "author": "Jared Forsyth <jared@jaredforsyth.com>",
+  "license": "Apache v2",
+  "bugs": {
+    "url": "https://github.com/notablemind/input-tree/issues"
+  }
+}
