@@ -1,0 +1,17 @@
+{
+  "name": "input-tree",
+  "repo": "notablemind/input-tree",
+  "description": "A mivable input tree with keyboard rearrangement",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "styles": [
+    "index.css"
+  ],
+}
