@@ -2,7 +2,40 @@
 var keys = require('keys')
 
 var InputHead = module.exports = React.createClass({
-  // all about the focus
+
+  gotData: function (data) {
+    this.setState({input: data.name})
+  },
+
+  keyMap: function () {
+    var keymap = {}
+      , names = ['left', 'right', 'up', 'down']
+    function c(name) {return 'move' + name[0].toUpperCase() + name.slice(1)}
+    for (var i=0; i<names.length; i++) {
+      if (!this.props.keymap[c(names[i])]) continue;
+      keymap[this.props.keymap[c(names[i])]] = this.props.move[names[i]].bind(null, true)
+    }
+    return keys(keymap)
+  },
+
+  inputChange: function (e) {
+    this.setState({input:e.target.value})
+    this.props.set({name: e.target.value})
+  },
+  blur: function () {
+    this.setState({focus: false})
+  },
+  focus: function () {
+    this.setState({focus: true})
+  },
+
+  // component api
+  getInitialState: function () {
+    return {
+      focus: this.props.focus,
+      input: ''
+    }
+  },
   componentDidMount: function () {
     if (this.state.focus) {
       this.refs.input.getDOMNode().focus()
@@ -20,40 +53,8 @@ var InputHead = module.exports = React.createClass({
     if (!this.props.on) return
     this.props.on(this.gotData)
   },
-
   componentWillUnmount: function () {
     this.props.off(this.gotData)
-  },
-
-  gotData: function (data) {
-    this.setState({input: data.name})
-  },
-
-  inputChange: function (e) {
-    this.setState({input:e.target.value})
-    this.props.set({name: e.target.value})
-  },
-  blur: function () {
-    this.setState({focus: false})
-  },
-  focus: function () {
-    this.setState({focus: true})
-  },
-
-  getInitialState: function () {
-    return {
-      focus: this.props.focus,
-      input: ''
-    }
-  },
-
-  keyMap: function () {
-    var keymap = {}
-      , names = ['moveLeft', 'moveLeft', 'moveLp', 'moveLown']
-    for (var i=0; i<names.length; i++) {
-      keymap[names[i]] = this.props.keys[names[i]].bind(null, true)
-    }
-    return keys(keymap)
   },
 
   render: function () {

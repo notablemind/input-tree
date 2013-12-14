@@ -1,25 +1,21 @@
 
-function m(a, b) {
-  for (var n in b) {a[n] = b[n]}
-  return a
-}
+var Tree = require('tree')
+  , Manager = require('manager')
+  , Input = require('input')
 
-function InputTree(options) {
-  function thehead(props, children) {
-    return InputHead(m(props, 
-  }
-  return tree.Tree({
-    manager: options.manager,
-    head: thehead,
-    id: 0,
-  })
-}
-
-
-
-React.renderComponent(tree.InputTree({
-  manager: new tree.Manager({id: 0, children: rTree(0, 3)}),
-  head: InputHead,
+React.renderComponent(tree.Tree({
+  manager: new Manager({id: 0, children: rTree(0, 3)}),
+  head: Input,
+  headProps: {
+    keymap: {
+      moveLeft: 'ctrl h',
+      moveRight: 'ctrl l',
+      moveDown: 'ctrl j',
+      moveUp: 'ctrl k',
+      goDown: 'down',
+      goUp: 'up',
+    }
+  },
   id: 0,
 }), document.getElementById('inputs'))
 
