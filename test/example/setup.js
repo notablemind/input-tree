@@ -33,10 +33,11 @@ React.renderComponent(Tree({
   head: Input,
   headProps: {
     keymap: {
-      moveLeft: 'ctrl h',
-      moveRight: 'ctrl l',
-      moveDown: 'ctrl j',
-      moveUp: 'ctrl k',
+      moveLeft: 'alt left|shift tab',
+      moveRight: 'alt right|tab',
+      moveDown: 'alt down',
+      moveUp: 'alt up',
+
       newAfter: 'return',
       goDown: 'down',
       goUp: 'up',
