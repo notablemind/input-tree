@@ -23,32 +23,25 @@ var InputHead = module.exports = React.createClass({
     this.setState({input:e.target.value})
     this.props.set({name: e.target.value})
   },
-  blur: function () {
-    this.setState({focus: false})
-  },
   focus: function () {
-    this.setState({focus: true})
+    if (!this.props.setFocus) this.props.onFocus()
   },
 
   // component api
   getInitialState: function () {
     return {
-      focus: this.props.focus,
       input: ''
     }
   },
   componentDidMount: function () {
-    if (this.state.focus) {
+    if (this.props.setFocus) {
       this.refs.input.getDOMNode().focus()
     }
   },
   componentDidUpdate: function () {
-    if (this.state.focus) {
+    if (this.props.setFocus) {
       this.refs.input.getDOMNode().focus()
     }
-  },
-  componentWillReceiveProps: function (props, oprops) {
-    if (props.focus) this.setState({focus: true})
   },
   componentWillMount: function () {
     if (!this.props.on) return
@@ -61,7 +54,7 @@ var InputHead = module.exports = React.createClass({
   render: function () {
     return React.DOM.input({
       ref: 'input',
-      className: this.state.focus ? 'focus' : '',
+      className: this.props.setFocus ? 'focus' : '',
       onChange: this.inputChange,
       onBlur: this.blur,
       onFocus: this.focus,

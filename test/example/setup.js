@@ -12,9 +12,9 @@ function rid() {
   return id
 }
 
-function rTree(idx, depth) {
+function rTree(idx, depth, fixed) {
   if (depth <= 0) return
-  var n = parseInt(Math.random() * 3) + 2
+  var n = fixed || parseInt(Math.random() * 3) + 2
     , children = []
   for (var i=0; i<n; i++) {
     children.push({
@@ -22,14 +22,14 @@ function rTree(idx, depth) {
       data: {
         name: 'Name of ' + idx + ':' + i
       },
-      children: rTree(idx + ':' + i, depth-1)
+      children: rTree(idx + ':' + i, depth-1, fixed)
     })
   }
   return children
 }
 
 React.renderComponent(Tree({
-  manager: new Manager({id: 0, children: rTree(0, 3)}),
+  manager: new Manager({id: 0, children: rTree(0, 3)}), // big test is rTree(0, 3, 6)
   head: Input,
   headProps: {
     keymap: {
