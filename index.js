@@ -14,9 +14,8 @@ var InputHead = module.exports = React.createClass({
     for (var name in this.props.actions) {
       key = this.props.keymap[name]
       if (!key) continue
-      keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true)
+      keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true, this)
     }
-    console.log(keymap, this.props.actions)
     return keys(keymap)
   },
 
