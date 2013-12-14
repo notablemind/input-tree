@@ -1,5 +1,5 @@
 
-build: components index.js input.js tree.css
+build: components index.js input-tree.css
 	@component build --dev -o test/example/ -n index
 
 components: component.json
@@ -11,8 +11,8 @@ clean:
 blanket:
 	@mocha -R html-cov --require blanket > coverage.html
 
-input.js: input.jsx
-	@jsx input.jsx > input.js
+index.js: index.jsx
+	@jsx index.jsx > index.js
 
 test:
 	@mocha -R spec

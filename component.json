@@ -4,14 +4,19 @@
   "description": "A mivable input tree with keyboard rearrangement",
   "version": "0.0.1",
   "keywords": [],
-  "dependencies": {},
-  "development": {},
+  "dependencies": {
+      "notablemind/keys": "*"
+  },
+  "development": {
+    "notablemind/manager": "*",
+    "notablemind/tree": "*"
+  },
   "license": "MIT",
   "main": "index.js",
   "scripts": [
     "index.js"
   ],
   "styles": [
-    "index.css"
+    "input-tree.css"
   ]
 }
