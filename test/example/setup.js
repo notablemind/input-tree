@@ -38,7 +38,8 @@ React.renderComponent(Tree({
       moveDown: 'alt down',
       moveUp: 'alt up',
 
-      newAfter: 'return',
+      newNode: 'return',
+      newAfter: 'shift return',
       goDown: 'down',
       goUp: 'up',
     }

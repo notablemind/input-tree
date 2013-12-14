@@ -16,19 +16,39 @@ var InputHead = module.exports = React.createClass({
       if (!key) continue
       keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true)
     }
-    if (this.props.keymap.newAfter) {
-      keymap[keys.normalize(this.props.keymap.newAfter).value] = this.onReturn
+    if (this.props.keymap.newNode) {
+      keymap[keys.normalize(this.props.keymap.newNode).value] = this.onReturn.bind(this, false)
     }
+    if (this.props.keymap.newAfter) {
+      keymap[keys.normalize(this.props.keymap.newAfter).value] = this.onReturn.bind(this, true)
+    }
+    keymap['backspace'] = this.onBackspace
     return keys(keymap)
   },
 
-  onReturn: function () {
+  addText: function (text) {
+    var full = this.state.input + text
+      , pos = this.state.input.length
+      , inp = this.refs.input.getDOMNode()
+    this.setState({input: full})
+    this.props.set({name: full})
+    setTimeout(function () {
+    inp.selectionStart = inp.selectionEnd = pos
+    }, 10)
+  },
+
+  onBackspace: function (e) {
+    if (e.target.selectionEnd) return true
+    this.props.actions.remove(this.state.input)
+  },
+
+  onReturn: function (after) {
     var inp = this.refs.input.getDOMNode()
       , pos = inp.selectionStart
       , bef = this.state.input.slice(0, pos)
       , aft = this.state.input.slice(pos)
     if (bef !== this.state.input) this.setState({input: bef})
-    this.props.actions.createAfter(aft)
+    this.props.actions.createAfter(aft, after)
   },
 
   inputChange: function (e) {
@@ -46,6 +66,7 @@ var InputHead = module.exports = React.createClass({
       input: ''
     }
   },
+
   focusMe: function () {
     var inp = this.refs.input.getDOMNode()
       , focusAtStart = this.props.setFocus === 'start'
@@ -55,6 +76,7 @@ var InputHead = module.exports = React.createClass({
     inp.focus()
     inp.selectionStart = inp.selectionEnd = pos
   },
+
   componentDidMount: function () {
     if (this.props.setFocus) {
       this.focusMe()
