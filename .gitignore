@@ -1,5 +1,5 @@
 components
 build
 *.swp
-index.js
 node_modules
+test/example/index.js
