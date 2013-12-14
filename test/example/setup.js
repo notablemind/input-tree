@@ -28,7 +28,6 @@ function rTree(idx, depth) {
   return children
 }
 
-
 React.renderComponent(Tree({
   manager: new Manager({id: 0, children: rTree(0, 3)}),
   head: Input,
@@ -38,6 +37,7 @@ React.renderComponent(Tree({
       moveRight: 'ctrl l',
       moveDown: 'ctrl j',
       moveUp: 'ctrl k',
+      newAfter: 'return',
       goDown: 'down',
       goUp: 'up',
     }

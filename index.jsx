@@ -10,14 +10,13 @@ var InputHead = module.exports = React.createClass({
 
   keyMap: function () {
     var keymap = {}
-      , names = ['left', 'right', 'up', 'down']
       , key
-    function c(name) {return 'move' + name[0].toUpperCase() + name.slice(1)}
-    for (var i=0; i<names.length; i++) {
-      key = this.props.keymap[c(names[i])]
-      if (!key) continue;
-      keymap[keys.normalize(key).value] = this.props.move[names[i]].bind(null, true)
+    for (var name in this.props.actions) {
+      key = this.props.keymap[name]
+      if (!key) continue
+      keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true)
     }
+    console.log(keymap, this.props.actions)
     return keys(keymap)
   },
 
