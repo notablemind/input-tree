@@ -19,18 +19,25 @@ function rTree(idx, depth, fixed) {
   for (var i=0; i<n; i++) {
     children.push({
       id: rid(), // idx + ':' + i,
-      data: {
-        name: 'Name of ' + idx + ':' + i
-      },
+      text: 'Name of ' + idx + ':' + i
       children: rTree(idx + ':' + i, depth-1, fixed)
     })
   }
   return children
 }
 
+var InputHead = React.createClass({
+  render: function () {
+    return this.transferPropsTo(Input({
+      on: this.props.on.bind(null, 'text'),
+      off: this.props.off.bind(null, 'text')
+    }))
+  }
+})
+
 React.renderComponent(Tree({
   manager: new Manager({id: 0, children: rTree(0, 3)}), // big test is rTree(0, 3, 6)
-  head: Input,
+  head: InputHead,
   headProps: {
     keymap: {
       moveLeft: 'alt left|shift tab',

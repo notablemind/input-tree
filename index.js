@@ -1,4 +1,3 @@
-/* @jsx React.DOM */
 
 var keys = require('keys')
 
@@ -108,3 +107,5 @@ var InputHead = module.exports = React.createClass({
     })
   }
 })
+
+
