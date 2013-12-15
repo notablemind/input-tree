@@ -5,11 +5,12 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {
-      "notablemind/keys": "*"
+    "notablemind/keys": "*"
   },
   "development": {
     "notablemind/manager": "*",
-    "notablemind/tree": "*"
+    "notablemind/tree": "*",
+    "notablemind/note-manager": "*"
   },
   "license": "MIT",
   "main": "index.js",
@@ -18,5 +19,6 @@
   ],
   "styles": [
     "input-tree.css"
-  ]
+  ],
+  "remotes": []
 }

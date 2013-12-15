@@ -1,6 +1,6 @@
 
 var Tree = require('tree')
-  , Manager = require('manager')
+  , Manager = require('note-manager')
   , Input = require('input-tree')
 
 function rid() {
@@ -19,7 +19,7 @@ function rTree(idx, depth, fixed) {
   for (var i=0; i<n; i++) {
     children.push({
       id: rid(), // idx + ':' + i,
-      text: 'Name of ' + idx + ':' + i
+      data: {text: 'Name of ' + idx + ':' + i},
       children: rTree(idx + ':' + i, depth-1, fixed)
     })
   }
@@ -27,10 +27,45 @@ function rTree(idx, depth, fixed) {
 }
 
 var InputHead = React.createClass({
+
+  getInitialState: function () {
+    return {
+      text: '',
+      selection: false
+    }
+  },
+
+  componentWillMount: function () {
+    if (!this.props.on) return
+    this.props.on(this.gotData)
+  },
+  componentWillUnmount: function () {
+    this.props.off(this.gotData)
+  },
+
+  gotData: function (data) {
+    this.setState({text: (data.data && data.data.text) || ''})
+  },
+  onChange: function (text) {
+    this.setState({text: text, selection: false})
+    this.props.set('data', {text: text})
+  },
+
+  addText: function (text) {
+    var full = this.state.text + text
+      , pos = this.state.text.length
+    this.setState({
+      text: full,
+      selection: this.state.text.length
+    })
+    this.props.set('data', {text: full})
+  },
+
   render: function () {
     return this.transferPropsTo(Input({
-      on: this.props.on.bind(null, 'text'),
-      off: this.props.off.bind(null, 'text')
+      setSelection: this.state.selection,
+      onChange: this.onChange,
+      value: this.state.text,
     }))
   }
 })

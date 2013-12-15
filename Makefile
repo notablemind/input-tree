@@ -17,6 +17,12 @@ test:
 test/example/react.js:
 	@curl -L -o test/example/react.js http://fb.me/react-0.5.1.js
 
+test-only:
+	@mocha -R spec
+
+lint:
+	@jshint --verbose *.js *.json
+
 example: test/example/react.js build
 	@xdg-open test/example/index.html
 
@@ -27,4 +33,4 @@ gh-pages: test/example/react.js build
 	mv web/* ./
 	rm -rf web
 
-.PHONY: clean test
+.PHONY: clean test lint test-only example gh-pages

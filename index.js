@@ -3,8 +3,16 @@ var keys = require('keys')
 
 var InputHead = module.exports = React.createClass({
 
-  gotData: function (data) {
-    this.setState({input: data.name})
+  getDefaultProps: function () {
+    return {
+      actions: {},
+      keymap: {},
+      value: '',
+      onChange: function () {},
+      setFocus: false,
+      onFocus: function () {},
+      setSelection: false
+    }
   },
 
   keyMap: function () {
@@ -22,37 +30,37 @@ var InputHead = module.exports = React.createClass({
       keymap[keys.normalize(this.props.keymap.newAfter).value] = this.onReturn.bind(this, true)
     }
     keymap['backspace'] = this.onBackspace
+    keymap['left'] = this.onLeft
+    keymap['right'] = this.onRight
     return keys(keymap)
   },
 
-  addText: function (text) {
-    var full = this.state.input + text
-      , pos = this.state.input.length
-      , inp = this.refs.input.getDOMNode()
-    this.setState({input: full})
-    this.props.set({name: full})
-    setTimeout(function () {
-    inp.selectionStart = inp.selectionEnd = pos
-    }, 10)
+  onBackspace: function (e) {
+    if (e.target.selectionEnd > 0) return true
+    this.props.actions.remove(this.props.value)
   },
 
-  onBackspace: function (e) {
-    if (e.target.selectionEnd) return true
-    this.props.actions.remove(this.state.input)
+  onLeft: function (e) {
+    if (e.target.selectionEnd > 0) return true
+    this.props.actions.goUp()
+  },
+
+  onRight: function (e) {
+    if (e.target.selectionStart < e.target.value.length) return true
+    this.props.actions.goDown(true, true)
   },
 
   onReturn: function (after) {
     var inp = this.refs.input.getDOMNode()
       , pos = inp.selectionStart
-      , bef = this.state.input.slice(0, pos)
-      , aft = this.state.input.slice(pos)
-    if (bef !== this.state.input) this.setState({input: bef})
+      , bef = this.props.value.slice(0, pos)
+      , aft = this.props.value.slice(pos)
+    if (bef !== this.props.value) this.props.onChange(bef)
     this.props.actions.createAfter(aft, after)
   },
 
   inputChange: function (e) {
-    this.setState({input:e.target.value})
-    this.props.set({name: e.target.value})
+    this.props.onChange(e.target.value)
   },
 
   focus: function () {
@@ -60,38 +68,37 @@ var InputHead = module.exports = React.createClass({
   },
 
   // component api
-  getInitialState: function () {
-    return {
-      input: ''
-    }
-  },
-
   focusMe: function () {
     var inp = this.refs.input.getDOMNode()
       , focusAtStart = this.props.setFocus === 'start'
       , pos = 0
     if (inp === document.activeElement) return
-    if (this.state.input && !focusAtStart) pos = this.state.input.length
+    if (this.props.value && !focusAtStart) pos = this.props.value.length
     inp.focus()
     inp.selectionStart = inp.selectionEnd = pos
+  },
+
+  selectMe: function () {
+    var inp = this.refs.input.getDOMNode()
+    inp.selectionStart = inp.selectionEnd = this.props.setSelection
   },
 
   componentDidMount: function () {
     if (this.props.setFocus) {
       this.focusMe()
     }
+    if (this.props.setSelection !== false) {
+      this.selectMe()
+    }
   },
+
   componentDidUpdate: function () {
     if (this.props.setFocus) {
       this.focusMe()
     }
-  },
-  componentWillMount: function () {
-    if (!this.props.on) return
-    this.props.on(this.gotData)
-  },
-  componentWillUnmount: function () {
-    this.props.off(this.gotData)
+    if (this.props.setSelection !== false) {
+      this.selectMe()
+    }
   },
 
   render: function () {
@@ -99,10 +106,9 @@ var InputHead = module.exports = React.createClass({
       ref: 'input',
       className: this.props.setFocus ? 'focus' : '',
       onChange: this.inputChange,
-      onBlur: this.blur,
       onFocus: this.focus,
       placeholder: 'feedme',
-      value: this.state.input,
+      value: this.props.value,
       onKeyDown: this.keyMap()
     })
   }
