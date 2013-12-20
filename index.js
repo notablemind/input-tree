@@ -11,27 +11,39 @@ var InputHead = module.exports = React.createClass({
       onChange: function () {},
       setFocus: false,
       onFocus: function () {},
-      setSelection: false
+      setSelection: false,
+      className: ''
     }
   },
 
   keyMap: function () {
     var keymap = {}
       , key
-    for (var name in this.props.actions) {
-      key = this.props.keymap[name]
-      if (!key) continue
-      keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true)
+    if (this.props.onNext) {
+      keymap['tab'] = this.props.onNext
     }
-    if (this.props.keymap.newNode) {
-      keymap[keys.normalize(this.props.keymap.newNode).value] = this.onReturn.bind(this, false)
+    if (this.props.onPrev) {
+      keymap['shift tab'] = this.props.onPrev
     }
-    if (this.props.keymap.newAfter) {
-      keymap[keys.normalize(this.props.keymap.newAfter).value] = this.onReturn.bind(this, true)
+
+    if (this.props.keymap) {
+      for (var name in this.props.actions) {
+        key = this.props.keymap[name]
+        if (!key) continue
+        keymap[keys.normalize(key).value] = this.props.actions[name].bind(null, true)
+      }
+      if (this.props.keymap.newNode) {
+        keymap[keys.normalize(this.props.keymap.newNode).value] = this.onReturn.bind(this, false)
+      }
+      if (this.props.keymap.newAfter) {
+        keymap[keys.normalize(this.props.keymap.newAfter).value] = this.onReturn.bind(this, true)
+      }
     }
-    keymap['backspace'] = this.onBackspace
-    keymap['left'] = this.onLeft
-    keymap['right'] = this.onRight
+    if (this.props.actions) {
+      keymap['backspace'] = this.onBackspace
+      keymap['left'] = this.onLeft
+      keymap['right'] = this.onRight
+    }
     return keys(keymap)
   },
 
@@ -56,7 +68,7 @@ var InputHead = module.exports = React.createClass({
       , bef = this.props.value.slice(0, pos)
       , aft = this.props.value.slice(pos)
     if (bef !== this.props.value) this.props.onChange(bef)
-    this.props.actions.createAfter(aft, after)
+    this.props.actions.createAfter({text: aft}, after)
   },
 
   inputChange: function (e) {
@@ -64,7 +76,11 @@ var InputHead = module.exports = React.createClass({
   },
 
   focus: function () {
-    if (!this.props.setFocus) this.props.onFocus()
+    this.focusMe()
+  },
+
+  onFocus: function () {
+    if (!this.props.setFocus && this.props.onFocus) this.props.onFocus()
   },
 
   // component api
@@ -104,10 +120,10 @@ var InputHead = module.exports = React.createClass({
   render: function () {
     return React.DOM.input({
       ref: 'input',
-      className: this.props.setFocus ? 'focus' : '',
+      className: this.props.className + ' ' + (this.props.setFocus ? 'focus' : ''),
       onChange: this.inputChange,
-      onFocus: this.focus,
-      placeholder: 'feedme',
+      onFocus: this.onFocus,
+      placeholder: 'Type here',
       value: this.props.value,
       onKeyDown: this.keyMap()
     })
