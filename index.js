@@ -1,5 +1,6 @@
 
 var keys = require('keys')
+  , Textarea = require('textarea-grow')
 
 var InputHead = module.exports = React.createClass({
 
@@ -8,6 +9,7 @@ var InputHead = module.exports = React.createClass({
       actions: {},
       keymap: {},
       value: '',
+      multiline: true,
       onChange: function () {},
       setFocus: false,
       onFocus: function () {},
@@ -44,6 +46,9 @@ var InputHead = module.exports = React.createClass({
       keymap['left'] = this.onLeft
       keymap['right'] = this.onRight
     }
+    if (this.props.preserveReturn) {
+      delete keymap['return']
+    }
     return keys(keymap)
   },
 
@@ -54,12 +59,12 @@ var InputHead = module.exports = React.createClass({
 
   onLeft: function (e) {
     if (e.target.selectionEnd > 0) return true
-    this.props.actions.goUp()
+    this.props.actions.goLeft()
   },
 
   onRight: function (e) {
     if (e.target.selectionStart < e.target.value.length) return true
-    this.props.actions.goDown(true, true)
+    this.props.actions.goRight()
   },
 
   onReturn: function (after) {
@@ -75,18 +80,21 @@ var InputHead = module.exports = React.createClass({
     this.props.onChange(e.target.value)
   },
 
-  focus: function () {
-    this.focusMe()
+  focus: function (start) {
+    this.focusMe(start)
   },
 
   onFocus: function () {
-    if (!this.props.setFocus && this.props.onFocus) this.props.onFocus()
+    // if (!this.props.setFocus && this.props.onFocus) this.props.onFocus()
   },
 
   // component api
-  focusMe: function () {
+  focusMe: function (start) {
+    if (this.props.multiline) {
+      return this.refs.input.focus(start)
+    }
     var inp = this.refs.input.getDOMNode()
-      , focusAtStart = this.props.setFocus === 'start'
+      , focusAtStart = start || this.props.setFocus === 'start'
       , pos = 0
     if (inp === document.activeElement) return
     if (this.props.value && !focusAtStart) pos = this.props.value.length
@@ -117,14 +125,20 @@ var InputHead = module.exports = React.createClass({
     }
   },
 
+  shouldComponentUpdate: function (props, state) {
+    return props.value !== this.props.value || props.multiline !== this.props.multiline
+  },
   render: function () {
-    return React.DOM.input({
+    var n = this.props.multiline ? Textarea : React.DOM.input
+    return n({
       ref: 'input',
-      className: this.props.className + ' ' + (this.props.setFocus ? 'focus' : ''),
+      className: 'input-head ' + this.props.className + ' ' + (this.props.setFocus ? 'focus' : ''),
       onChange: this.inputChange,
       onFocus: this.onFocus,
       placeholder: 'Type here',
       value: this.props.value,
+      goUp: this.props.actions.goUp,
+      goDown: this.props.actions.goDown,
       onKeyDown: this.keyMap()
     })
   }
